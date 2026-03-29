@@ -139,7 +139,7 @@ export default function Home() {
   return (
     <>
       <style>{STYLE}</style>
-      <div className="-mx-4 -mt-8 home-root bg-stone-50">
+      <div className="home-root bg-stone-50">
 
         {/* ══════════════════════════════════════
             H E R O
@@ -178,7 +178,7 @@ export default function Home() {
           </div>
 
           {/* ── Hero copy ── */}
-          <div className="relative z-10 w-full px-8 pb-20 mx-auto md:px-16 lg:px-28 pt-44 max-w-7xl">
+          <div className="relative z-10 w-full px-6 pb-20 mx-auto md:px-10 lg:px-16 pt-44 max-w-7xl">
             <div className="max-w-3xl">
 
               {/* Eyebrow line */}
@@ -257,8 +257,8 @@ export default function Home() {
         {/* ══════════════════════════════════════
             R E S T A U R A N T S
         ══════════════════════════════════════ */}
-        <section id="spots" className="px-6 py-24 bg-stone-50 md:px-12 lg:px-24">
-          <div className="mx-auto max-w-7xl">
+        <section id="spots" className="py-24 bg-stone-50">
+          <div className="px-6 mx-auto md:px-10 lg:px-16 max-w-7xl">
 
             {/* Section heading */}
             <div className="flex flex-col justify-between gap-6 mb-16 md:flex-row md:items-end">
@@ -377,7 +377,7 @@ export default function Home() {
         {/* ══════════════════════════════════════
             C T A   B A N N E R
         ══════════════════════════════════════ */}
-        <section className="relative px-8 py-24 overflow-hidden bg-stone-950 md:px-16">
+        <section className="relative py-24 overflow-hidden bg-stone-950">
           <div className="absolute rounded-full pointer-events-none -top-20 -left-20 w-80 h-80 blur-3xl opacity-20"
             style={{background:'radial-gradient(circle,#ef4444,transparent)'}}/>
           <div className="absolute rounded-full pointer-events-none -bottom-20 -right-20 w-96 h-96 blur-3xl opacity-15"
@@ -386,7 +386,8 @@ export default function Home() {
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-800/40 to-transparent"/>
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-stone-700/40 to-transparent"/>
 
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <div className="relative z-10 px-6 mx-auto md:px-10 lg:px-16 max-w-7xl">
+          <div className="max-w-4xl mx-auto text-center">
             <p className="text-red-500 text-xs font-semibold uppercase tracking-[0.3em] mb-5">
               Ready to eat?
             </p>
@@ -416,6 +417,7 @@ export default function Home() {
                 Browse Restaurants ↑
               </button>
             )}
+          </div>
           </div>
         </section>
 

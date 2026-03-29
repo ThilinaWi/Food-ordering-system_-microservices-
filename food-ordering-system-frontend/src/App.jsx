@@ -31,7 +31,7 @@ function AppLayout() {
         </main>
       ) : (
         /* All other pages: normal container */
-        <main className="container flex-grow px-4 py-8 mx-auto">
+        <main className="flex-grow px-6 py-8 mx-auto md:px-10 lg:px-16 max-w-7xl">
           <Routes>
             <Route path="/login"    element={<Login />} />
             <Route path="/register" element={<Register />} />

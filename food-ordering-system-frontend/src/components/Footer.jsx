@@ -183,7 +183,7 @@ const Footer = () => {
           }}
         />
 
-        <div className="container relative z-10 px-6 pt-16 pb-8 mx-auto max-w-7xl">
+        <div className="container relative z-10 px-6 pt-16 pb-8 mx-auto max-w-7xl md:px-10 lg:px-16">
 
           {/* ── 5-column grid ── */}
           <div className="grid grid-cols-1 gap-10 pb-12 border-b border-slate-800 sm:grid-cols-2 lg:grid-cols-5">
