@@ -19,13 +19,13 @@ const STYLE = `
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   }
 
-  .card-shine { position:relative; overflow:hidden; }
-  .card-shine::before {
-    content:''; position:absolute; top:-60%; left:-60%; width:40%; height:200%;
-    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.1) 50%,transparent 60%);
-    transform:rotate(10deg); transition:left 0.7s ease; z-index:10; pointer-events:none;
+  .card-shine { position:relative; }
+  .card-shine::after {
+    content:''; position:absolute; inset:0; border-radius:1.5rem;
+    background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 60%);
+    opacity:0; transition:opacity 0.3s ease; z-index:5; pointer-events:none;
   }
-  .card-shine:hover::before { left:130%; }
+  .card-shine:hover::after { opacity:1; }
 
   .marquee-wrap { overflow:hidden; }
   .marquee-track { display:flex; gap:1.5rem; animation:marquee 30s linear infinite; width:max-content; }
@@ -42,8 +42,14 @@ const STYLE = `
   @keyframes subtle-zoom { from{transform:scale(1.04)} to{transform:scale(1.12)} }
   .hero-img { animation:subtle-zoom 18s ease-in-out infinite alternate; }
 
-  .rcard { transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease; }
-  .rcard:hover { transform:translateY(-10px) scale(1.015); box-shadow:0 32px 80px -16px rgba(0,0,0,0.18); }
+  .rcard {
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+  .rcard:hover { transform:translateY(-10px) scale(1.015); box-shadow:0 32px 80px -16px rgba(0,0,0,0.22); }
 
   .search-bar { transition:box-shadow 0.3s ease; }
   .search-bar:focus-within { box-shadow:0 0 0 3px rgba(239,68,68,0.25), 0 24px 64px rgba(0,0,0,0.18); }
@@ -257,7 +263,7 @@ export default function Home() {
         {/* ══════════════════════════════════════
             R E S T A U R A N T S
         ══════════════════════════════════════ */}
-        <section id="spots" className="py-24 bg-stone-50">
+        <section id="spots" className="py-24 bg-stone-100">
           <div className="px-6 mx-auto md:px-10 lg:px-16 max-w-7xl">
 
             {/* Section heading */}
@@ -303,19 +309,19 @@ export default function Home() {
                   <Link
                     key={restaurant._id}
                     to={`/menu/${restaurant._id}`}
-                    className="flex flex-col overflow-hidden bg-white border shadow-sm rcard card-shine group rounded-3xl border-stone-100"
+                    className="flex flex-col bg-white border shadow-md border-stone-200 rcard card-shine group rounded-3xl"
                   >
                     {/* Image */}
-                    <div className="relative flex-shrink-0 h-56 overflow-hidden bg-stone-100">
+                    <div className="relative flex-shrink-0 h-56 overflow-hidden bg-stone-100 rounded-t-3xl">
                       <img
                         src={restaurant.image
                           ? `http://localhost:3000/uploads/${restaurant.image}`
                           : 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop'}
                         alt={restaurant.name}
                         className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
-                        onError={e => { e.target.onerror=null; e.target.src='https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop'; }}
+                        onError={e => { e.target.onerror=null; e.target.src='https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop'; }}
                       />
-                      <div className="absolute inset-0 transition-colors bg-stone-950/0 group-hover:bg-stone-950/15 duration-400"/>
+                      <div className="absolute inset-0 transition-colors duration-300 bg-transparent group-hover:bg-stone-950/10"/>
 
                       {/* Rating pill */}
                       <button onClick={e => handleOpenRating(e, restaurant)}
@@ -356,7 +362,7 @@ export default function Home() {
                         <span className="text-xs font-medium truncate">{restaurant.address}</span>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 mt-auto border-t border-stone-100">
+                      <div className="flex items-center justify-between pt-4 mt-auto border-t border-stone-200">
                         <div className="flex items-center gap-1.5 text-stone-400 text-xs font-medium">
                           <Clock className="w-3.5 h-3.5"/>
                           20–35 min
