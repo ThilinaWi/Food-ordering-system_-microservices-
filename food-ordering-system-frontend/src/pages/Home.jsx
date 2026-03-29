@@ -166,8 +166,8 @@ export default function Home() {
           <div className="absolute w-48 h-48 rounded-full pointer-events-none bottom-32 right-32 blur-2xl opacity-15"
             style={{ background:'radial-gradient(circle,#f97316,transparent 70%)', zIndex:1 }} />
 
-          {/* ── Top-right stat pills ── */}
-          <div className="absolute z-10 flex gap-3 top-8 right-8 h1">
+          {/* ── Top-right stat pills — sit below the fixed navbar ── */}
+          <div className="absolute z-10 flex flex-col gap-2 sm:flex-row sm:gap-3 top-24 right-6 md:right-10 lg:right-16 h1">
             {[
               { icon:<Clock className="w-3.5 h-3.5"/>,     val:'25 min', sub:'avg delivery' },
               { icon:<Star className="w-3.5 h-3.5 fill-current text-amber-400"/>, val:'4.8★', sub:'avg rating' },
