@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -26,12 +27,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/menu/:restaurantId" element={<Menu />} />
           <Route path="/cart" element={<Cart />} />
-          
           <Route element={<ProtectedRoute />}>
             <Route path="/orders" element={<OrderHistory />} />
             <Route path="/payment/:orderId" element={<Payment />} />
           </Route>
-
           <Route element={<ProtectedRoute adminOnly={true} />}>
             <Route path="/admin" element={<AdminDashboard />}>
               <Route path="categories" element={<AdminCategories />} />
@@ -40,10 +39,10 @@ function App() {
               <Route path="orders" element={<AdminOrders />} />
             </Route>
           </Route>
-          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }
