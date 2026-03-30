@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -94,6 +95,12 @@ const Cart = () => {
   const [error,           setError]           = useState(null);
   const [location,        setLocation]        = useState('');
 
+
+  // Scroll to top when navigating to Cart page
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const deliveryFee = cart.items.length > 0 ? 150 : 0;
   const grandTotal  = totalAmount + deliveryFee;
 
@@ -158,7 +165,7 @@ const Cart = () => {
   return (
     <>
       <style>{STYLE}</style>
-      <div className="max-w-5xl mx-auto cart-root">
+      <div className="max-w-5xl pb-16 mx-auto cart-root">
 
         {/* Header */}
         <div className="mt-20 mb-8 rv">
