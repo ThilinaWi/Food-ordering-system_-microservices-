@@ -168,7 +168,7 @@ const Cart = () => {
       <div className="max-w-5xl pb-16 mx-auto cart-root">
 
         {/* Header */}
-        <div className="mt-20 mb-8 rv">
+        <div className="mt-16 mb-8 rv">
           <p className="text-red-500 text-xs font-black uppercase tracking-[0.25em] mb-2 flex items-center gap-2">
             <ShoppingBag className="w-3.5 h-3.5" /> Your Order
           </p>
