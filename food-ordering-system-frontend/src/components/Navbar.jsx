@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -59,6 +59,18 @@ const Navbar = () => {
   const [scrolled,    setScrolled]    = useState(false);
   const [mobileOpen,  setMobileOpen]  = useState(false);
   const [dropOpen,    setDropOpen]    = useState(false);
+  const dropRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) {
+        setDropOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const isHome = location.pathname === '/';
 
@@ -152,9 +164,8 @@ const Navbar = () => {
                 <div className={`w-px h-5 ${divider}`} />
 
                 {/* User avatar + dropdown */}
-                <div className="relative" onMouseLeave={() => setDropOpen(false)}>
+                <div className="relative" ref={dropRef}>
                   <button
-                    onMouseEnter={() => setDropOpen(true)}
                     onClick={() => setDropOpen(v => !v)}
                     className="flex items-center gap-2 group focus:outline-none"
                   >
@@ -166,20 +177,22 @@ const Navbar = () => {
                     </span>
                   </button>
 
-                  {/* Dropdown */}
-                  <div className={`user-dropdown absolute right-0 top-12 w-52 bg-white rounded-2xl shadow-2xl border border-stone-100 overflow-hidden ${dropOpen ? 'shown-drop' : 'hidden-drop'}`}>
-                    <div className="px-4 py-3.5 border-b border-stone-50 bg-stone-50">
-                      <p className="text-base font-bold truncate text-stone-900">{user.name || 'User'}</p>
-                      <p className="text-sm text-stone-400 truncate mt-0.5">{user.email}</p>
-                    </div>
-                    <div className="p-2">
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </button>
+                  {/* Dropdown — pt-2 bridges the gap so no flicker */}
+                  <div className={`user-dropdown absolute right-0 top-full pt-2 w-52 ${dropOpen ? 'shown-drop' : 'hidden-drop'}`}>
+                    <div className="overflow-hidden bg-white border shadow-2xl rounded-2xl border-stone-100">
+                      <div className="px-4 py-3.5 border-b border-stone-50 bg-stone-50">
+                        <p className="text-base font-bold truncate text-stone-900">{user.name || 'User'}</p>
+                        <p className="text-sm text-stone-400 truncate mt-0.5">{user.email}</p>
+                      </div>
+                      <div className="p-2">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-2 px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

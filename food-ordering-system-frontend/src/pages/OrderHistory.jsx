@@ -254,6 +254,7 @@ function OrderCard({ order, index }) {
   );
 }
 
+
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -274,7 +275,7 @@ export default function OrderHistory() {
 
   /* Loading */
   if (loading) return (
-    <div className="flex justify-center items-center h-[60vh]">
+    <div className="flex justify-center items-center h-[60vh] mt-20">
       <div className="w-10 h-10 border-b-2 border-red-500 rounded-full animate-spin" />
     </div>
   );
@@ -283,7 +284,7 @@ export default function OrderHistory() {
   if (orders.length === 0) return (
     <>
       <style>{STYLE}</style>
-      <div className="oh-root flex flex-col items-center justify-center min-h-[60vh] text-center gap-6 px-4">
+      <div className="oh-root flex flex-col items-center justify-center min-h-[60vh] text-center gap-6 px-4 mt-20">
         <div className="flex items-center justify-center w-24 h-24 oh-float bg-stone-100 rounded-3xl">
           <Package className="w-10 h-10 text-stone-300" />
         </div>

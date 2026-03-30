@@ -189,20 +189,20 @@ import AdminCategories from './admin/AdminCategories';
 import AdminRestaurants from './admin/AdminRestaurants';
 import AdminMenu from './admin/AdminMenu';
 import AdminOrders from './admin/AdminOrders';
-
+ 
 function AppLayout() {
   const { pathname } = useLocation();
-
+ 
   // Full-bleed: no container, navbar floats transparently over content
   const isFullBleed = pathname === '/' || pathname.startsWith('/menu/');
-
+ 
   // Admin: manages its own sidebar layout, just needs navbar clearance
   const isAdmin = pathname.startsWith('/admin');
-
+ 
   return (
     <div className="flex flex-col min-h-screen bg-stone-50 text-stone-900">
       <Navbar />
-
+ 
       {isFullBleed ? (
         /* Home & Menu — full-bleed, no padding, navbar transparent overlay */
         <main className="flex-grow">
@@ -212,7 +212,7 @@ function AppLayout() {
             <Route path="*"                   element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-
+ 
       ) : isAdmin ? (
         /* Admin — sidebar layout, just clear the fixed navbar height */
         <main className="flex-grow pt-20">
@@ -228,21 +228,21 @@ function AppLayout() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-
+ 
       ) : (
         /* All regular pages — centered container, clear fixed navbar (~72px) + breathing room */
-        <main className="flex-grow pb-9 pt-18">
+        <main className="flex-grow pb-9 pt-28">
           <div className="w-full px-6 mx-auto max-w-7xl md:px-10 lg:px-16">
             <Routes>
               <Route path="/login"    element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/cart"     element={<Cart />} />
-
+ 
               <Route element={<ProtectedRoute />}>
                 <Route path="/orders"           element={<OrderHistory />} />
                 <Route path="/payment/:orderId" element={<Payment />} />
               </Route>
-
+ 
               <Route element={<ProtectedRoute adminOnly={true} />}>
                 <Route path="/admin" element={<AdminDashboard />}>
                   <Route path="categories"  element={<AdminCategories />} />
@@ -251,18 +251,18 @@ function AppLayout() {
                   <Route path="orders"      element={<AdminOrders />} />
                 </Route>
               </Route>
-
+ 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
         </main>
       )}
-
+ 
       <Footer />
     </div>
   );
 }
-
+ 
 export default function App() {
   return (
     <Routes>
