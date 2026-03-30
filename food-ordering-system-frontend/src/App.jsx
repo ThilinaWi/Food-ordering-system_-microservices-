@@ -18,29 +18,30 @@ import AdminOrders from './admin/AdminOrders';
 
 function AppLayout() {
   const { pathname } = useLocation();
-  const isHome = pathname === '/';
+  const isFullBleed = pathname === '/' || pathname.startsWith('/menu/');
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
+    <div className="flex flex-col min-h-screen bg-stone-50 text-stone-900">
       <Navbar />
 
-      {isHome ? (
-        /* Home: no container, full-bleed hero */
+      {isFullBleed ? (
         <main className="flex-grow">
-          <Home />
+          <Routes>
+            <Route path="/"                   element={<Home />} />
+            <Route path="/menu/:restaurantId" element={<Menu />} />
+            <Route path="*"                   element={<Navigate to="/" replace />} />
+          </Routes>
         </main>
       ) : (
-        /* All other pages: normal container */
-        <main className="flex-grow px-6 py-8 mx-auto md:px-10 lg:px-16 max-w-7xl">
+        <main className="flex-grow px-6 py-10 mx-auto md:px-10 lg:px-16 max-w-7xl">
           <Routes>
             <Route path="/login"    element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/menu/:restaurantId" element={<Menu />} />
             <Route path="/cart"     element={<Cart />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/orders"            element={<OrderHistory />} />
-              <Route path="/payment/:orderId"  element={<Payment />} />
+              <Route path="/orders"           element={<OrderHistory />} />
+              <Route path="/payment/:orderId" element={<Payment />} />
             </Route>
 
             <Route element={<ProtectedRoute adminOnly={true} />}>
