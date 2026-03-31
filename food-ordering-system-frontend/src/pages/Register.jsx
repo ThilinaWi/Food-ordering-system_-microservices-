@@ -1,17 +1,41 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, User } from 'lucide-react';
+import { Lock, Mail, User, Utensils, ArrowRight } from 'lucide-react';
+
+const STYLE = `
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700;1,900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+  .auth-root { font-family: 'DM Sans', sans-serif; }
+  .auth-input {
+    width: 100%; padding: 0.875rem 1rem 0.875rem 3rem;
+    background: #f5f5f4; border: 1.5px solid #e7e5e4;
+    border-radius: 0.875rem; font-weight: 500; font-size: 0.9rem;
+    color: #1c1917; outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .auth-input:focus {
+    background: #fff;
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+  }
+  .auth-input::placeholder { color: #a8a29e; }
+  .auth-label { display: block; font-size: 0.78rem; font-weight: 700; color: #57534e; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  @keyframes authReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .auth-card { animation: authReveal 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+`;
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName]         = useState('');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  
+  const [error, setError]       = useState('');
+  const [loading, setLoading]   = useState(false);
+
   const { register } = useAuth();
-  const navigate = useNavigate();
+  const navigate     = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,91 +43,113 @@ const Register = () => {
     setLoading(true);
     try {
       await register(name, email, password);
-      // Auto redirect to login after success
       navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to register');
+      setError(err.response?.data?.error || 'Failed to register. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[70vh]">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Create an Account</h2>
-        
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm text-center">{error}</div>}
-        
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User className="h-5 w-5 text-gray-400" />
+    <>
+      <style>{STYLE}</style>
+      <div className="auth-root min-h-[80vh] flex items-center justify-center py-12">
+        <div className="w-full max-w-md auth-card">
+
+          <div className="bg-white rounded-[2rem] shadow-xl border border-stone-100 overflow-hidden">
+            <div className="w-full h-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
+
+            <div className="p-10">
+              {/* Logo */}
+              <div className="flex items-center gap-2.5 mb-8">
+                <div className="p-2 bg-red-600 shadow-lg rounded-xl shadow-red-900/20">
+                  <Utensils className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-black tracking-tight text-stone-900"
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>
+                  QuickCrave
+                </span>
               </div>
-              <input
-                type="text"
-                required
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+
+              <h1 className="mb-1 text-3xl font-black text-stone-900">Create account</h1>
+              <p className="mb-8 text-sm font-medium text-stone-500">Join thousands ordering from the best local spots.</p>
+
+              {error && (
+                <div className="flex items-start gap-2.5 bg-red-50 border border-red-100 text-red-700 font-semibold p-4 rounded-2xl mb-6 text-sm">
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 flex-shrink-0 mt-0.5">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"/>
+                  </svg>
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="auth-label">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute w-4 h-4 -translate-y-1/2 pointer-events-none text-stone-400 left-4 top-1/2" />
+                    <input
+                      type="text" placeholder="John Doe"
+                      value={name} onChange={e => setName(e.target.value)}
+                      required className="auth-input"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="auth-label">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute w-4 h-4 -translate-y-1/2 pointer-events-none text-stone-400 left-4 top-1/2" />
+                    <input
+                      type="email" placeholder="you@example.com"
+                      value={email} onChange={e => setEmail(e.target.value)}
+                      required className="auth-input"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="auth-label">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute w-4 h-4 -translate-y-1/2 pointer-events-none text-stone-400 left-4 top-1/2" />
+                    <input
+                      type="password" placeholder="Min. 8 characters"
+                      value={password} onChange={e => setPassword(e.target.value)}
+                      required className="auth-input"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit" disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-red-600 text-white font-bold py-4 rounded-2xl transition-all duration-200 shadow-lg hover:shadow-red-500/20 active:scale-[0.98] disabled:opacity-60 mt-2"
+                >
+                  {loading ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                      </svg>
+                      Creating account…
+                    </>
+                  ) : (
+                    <>Create Account <ArrowRight className="w-4 h-4" /></>
+                  )}
+                </button>
+              </form>
+
+              <p className="mt-8 text-sm font-medium text-center text-stone-500">
+                Already have an account?{' '}
+                <Link to="/login" className="font-bold text-red-600 hover:underline">
+                  Sign in
+                </Link>
+              </p>
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="email"
-                required
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="password"
-                required
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-lg transition-transform transform ${loading ? 'opacity-70' : 'hover:scale-[1.02]'}`}
-          >
-            {loading ? 'Creating account...' : 'Sign Up'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-gray-600">
-          Already have an account?{' '}
-          <Link to="/login" className="text-primary-600 font-semibold hover:underline">
-            Log in
-          </Link>
-        </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
