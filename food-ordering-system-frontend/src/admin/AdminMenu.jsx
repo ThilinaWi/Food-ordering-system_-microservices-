@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { Trash2, Image as ImageIcon } from 'lucide-react';
+import { Trash2, Image as ImageIcon, Edit } from 'lucide-react';
 
 const AdminMenu = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -11,6 +11,11 @@ const AdminMenu = () => {
     name: '', description: '', price: '', restaurantId: '', categoryId: ''
   });
   const [image, setImage] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    name: '', description: '', price: '', restaurantId: '', categoryId: ''
+  });
+  const [editImage, setEditImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
@@ -50,6 +55,40 @@ const AdminMenu = () => {
       await api.delete(`/menu/${id}`);
       fetchData();
     } catch (err) { alert('Failed to delete'); }
+  };
+
+  const startEdit = (item) => {
+    setEditingId(item._id);
+    setEditFormData({
+      name: item.name || '',
+      description: item.description || '',
+      price: item.price || '',
+      restaurantId: item.restaurantId?._id || '',
+      categoryId: item.categoryId?._id || ''
+    });
+    setEditImage(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditImage(null);
+    setEditFormData({ name: '', description: '', price: '', restaurantId: '', categoryId: '' });
+  };
+
+  const handleEditInputChange = (e) => setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+
+  const saveEdit = async (id) => {
+    const data = new FormData();
+    Object.keys(editFormData).forEach((key) => data.append(key, editFormData[key]));
+    if (editImage) data.append('image', editImage);
+
+    try {
+      await api.put(`/menu/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      cancelEdit();
+      fetchData();
+    } catch (err) {
+      alert('Failed to update menu item');
+    }
   };
 
   return (
@@ -111,20 +150,86 @@ const AdminMenu = () => {
               )}
             </div>
             <div className="p-5">
-              <div className="flex justify-between items-start mb-2">
-                <h4 className="font-bold text-xl text-gray-900 line-clamp-1">{item.name}</h4>
-                <span className="text-primary-600 font-black">${item.price.toFixed(2)}</span>
-              </div>
-              <p className="text-xs text-white bg-green-500 px-2 py-1 rounded inline-block font-bold mb-3">
-                {item.categoryId?.name || 'Uncategorized'}
-              </p>
-              <div className="text-sm text-gray-500 truncate mb-4">📍 {item.restaurantId?.name}</div>
-              <button 
-                onClick={() => handleDelete(item._id)} 
-                className="w-full flex items-center justify-center text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg font-bold transition"
-              >
-                <Trash2 className="w-4 h-4 mr-2" /> Remove Item
-              </button>
+              {editingId === item._id ? (
+                <div className="space-y-3">
+                  <input
+                    required
+                    name="name"
+                    type="text"
+                    value={editFormData.name}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2.5 rounded-lg border border-gray-200"
+                    placeholder="Food Name"
+                  />
+                  <input
+                    required
+                    name="price"
+                    type="number"
+                    value={editFormData.price}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2.5 rounded-lg border border-gray-200"
+                    placeholder="Price"
+                  />
+                  <select
+                    required
+                    name="restaurantId"
+                    value={editFormData.restaurantId}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-white"
+                  >
+                    <option value="" disabled>Select Restaurant</option>
+                    {restaurants.map(r => <option key={r._id} value={r._id}>{r.name}</option>)}
+                  </select>
+                  <select
+                    required
+                    name="categoryId"
+                    value={editFormData.categoryId}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2.5 rounded-lg border border-gray-200 bg-white"
+                  >
+                    <option value="" disabled>Select Category</option>
+                    {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                  </select>
+                  <input
+                    name="description"
+                    type="text"
+                    value={editFormData.description}
+                    onChange={handleEditInputChange}
+                    className="w-full p-2.5 rounded-lg border border-gray-200"
+                    placeholder="Description"
+                  />
+                  <input type="file" accept="image/*" onChange={(e) => setEditImage(e.target.files[0])} className="w-full text-sm" />
+                  <div className="flex gap-2 pt-1">
+                    <button onClick={() => saveEdit(item._id)} className="flex-1 bg-primary-600 text-white p-2 rounded-lg font-bold hover:bg-primary-700">Save</button>
+                    <button onClick={cancelEdit} className="flex-1 bg-gray-100 text-gray-700 p-2 rounded-lg font-bold hover:bg-gray-200">Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-bold text-xl text-gray-900 line-clamp-1">{item.name}</h4>
+                    <span className="text-primary-600 font-black">${item.price.toFixed(2)}</span>
+                  </div>
+                  <p className="text-xs text-white bg-green-500 px-2 py-1 rounded inline-block font-bold mb-3">
+                    {item.categoryId?.name || 'Uncategorized'}
+                  </p>
+                  <div className="text-sm text-gray-500 truncate mb-4">📍 {item.restaurantId?.name}</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => startEdit(item)}
+                      className="w-full flex items-center justify-center text-primary-600 hover:text-primary-700 bg-primary-50 hover:bg-primary-100 p-2 rounded-lg font-bold transition"
+                    >
+                      <Edit className="w-4 h-4 mr-2" /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="w-full flex items-center justify-center text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg font-bold transition"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" /> Remove
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}

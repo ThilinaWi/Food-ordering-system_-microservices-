@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import { Trash2, MapPin, Image as ImageIcon, Plus, Info } from 'lucide-react';
+import { Trash2, MapPin, Image as ImageIcon, Plus, Info, Edit } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -22,6 +22,12 @@ const AdminRestaurants = () => {
   const [cuisineType, setCuisineType] = useState('');
   const [image, setImage] = useState(null);
   const [location, setLocation] = useState({ lat: 6.9271, lng: 79.8612 }); // Default Colombo
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editAddress, setEditAddress] = useState('');
+  const [editCuisineType, setEditCuisineType] = useState('');
+  const [editImage, setEditImage] = useState(null);
+  const [editLocation, setEditLocation] = useState({ lat: 6.9271, lng: 79.8612 });
   const [loading, setLoading] = useState(false);
 
   const fetchRestaurants = async () => {
@@ -70,6 +76,56 @@ const AdminRestaurants = () => {
       await api.delete(`/restaurants/${id}`);
       fetchRestaurants();
     } catch (err) { alert('Failed to delete'); }
+  };
+
+  const startEdit = (restaurant) => {
+    setEditingId(restaurant._id);
+    setEditName(restaurant.name || '');
+    setEditAddress(restaurant.address || '');
+    setEditCuisineType(restaurant.cuisineType || '');
+    setEditLocation({
+      lat: restaurant.location?.lat || 6.9271,
+      lng: restaurant.location?.lng || 79.8612
+    });
+    setEditImage(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditName('');
+    setEditAddress('');
+    setEditCuisineType('');
+    setEditImage(null);
+    setEditLocation({ lat: 6.9271, lng: 79.8612 });
+  };
+
+  const saveEdit = async (id) => {
+    const formData = new FormData();
+    formData.append('name', editName);
+    formData.append('address', editAddress);
+    formData.append('cuisineType', editCuisineType);
+    formData.append('lat', editLocation.lat);
+    formData.append('lng', editLocation.lng);
+    if (editImage) formData.append('image', editImage);
+
+    try {
+      await api.put(`/restaurants/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      cancelEdit();
+      fetchRestaurants();
+    } catch (err) {
+      alert('Failed to update restaurant');
+    }
+  };
+
+  const EditMapEvents = () => {
+    useMapEvents({
+      click(e) {
+        setEditLocation(e.latlng);
+      },
+    });
+    return null;
   };
 
   return (
@@ -151,24 +207,77 @@ const AdminRestaurants = () => {
               <div className="divide-y divide-slate-50 max-h-[700px] overflow-y-auto">
                 {restaurants.map(rest => (
                   <div key={rest._id} className="p-6 flex items-center justify-between group hover:bg-slate-50 transition-colors">
-                     <div className="flex items-center space-x-4">
-                        <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden">
-                           {rest.image ? (
-                               <img src={`http://localhost:3000/uploads/${rest.image}`} alt="" className="w-full h-full object-cover" />
-                           ) : (
-                               <ImageIcon className="w-6 h-6 text-slate-300" />
-                           )}
+                     {editingId === rest._id ? (
+                        <div className="w-full space-y-3">
+                          <input
+                            required
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            className="w-full p-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Restaurant Name"
+                          />
+                          <input
+                            value={editCuisineType}
+                            onChange={(e) => setEditCuisineType(e.target.value)}
+                            className="w-full p-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Cuisine Type"
+                          />
+                          <input
+                            required
+                            value={editAddress}
+                            onChange={(e) => setEditAddress(e.target.value)}
+                            className="w-full p-3 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary-500"
+                            placeholder="Address"
+                          />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setEditImage(e.target.files[0])}
+                            className="w-full text-sm"
+                          />
+                          <div className="h-48 rounded-2xl overflow-hidden border border-slate-100">
+                            <MapContainer center={[editLocation.lat, editLocation.lng]} zoom={13} style={{ height: '100%', width: '100%' }}>
+                              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                              <Marker position={[editLocation.lat, editLocation.lng]} icon={customIcon} />
+                              <EditMapEvents />
+                            </MapContainer>
+                          </div>
+                          <p className="text-[10px] text-slate-400 font-bold px-1 flex items-center">
+                            <MapPin className="w-3 h-3 mr-1" /> Lat: {editLocation.lat.toFixed(4)}, Lng: {editLocation.lng.toFixed(4)}
+                          </p>
+                          <div className="flex gap-2 pt-1">
+                            <button onClick={() => saveEdit(rest._id)} className="bg-primary-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-primary-700">Save</button>
+                            <button onClick={cancelEdit} className="bg-slate-100 text-slate-700 px-4 py-2 rounded-xl font-bold hover:bg-slate-200">Cancel</button>
+                          </div>
                         </div>
-                        <div>
-                           <h4 className="font-bold text-slate-900">{rest.name}</h4>
-                           <p className="text-xs text-slate-500 font-medium flex items-center">
-                              <MapPin className="w-3 h-3 mr-1" /> {rest.address}
-                           </p>
-                        </div>
-                     </div>
-                     <button onClick={() => handleDelete(rest._id)} className="p-3 text-red-100 group-hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
-                        <Trash2 className="w-5 h-5" />
-                     </button>
+                      ) : (
+                        <>
+                          <div className="flex items-center space-x-4">
+                              <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden">
+                                {rest.image ? (
+                                    <img src={`http://localhost:3000/uploads/${rest.image}`} alt="" className="w-full h-full object-cover" />
+                                ) : (
+                                    <ImageIcon className="w-6 h-6 text-slate-300" />
+                                )}
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-slate-900">{rest.name}</h4>
+                                <p className="text-xs text-slate-500 font-medium">{rest.cuisineType || 'Cuisine not set'}</p>
+                                <p className="text-xs text-slate-500 font-medium flex items-center">
+                                  <MapPin className="w-3 h-3 mr-1" /> {rest.address}
+                                </p>
+                              </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => startEdit(rest)} className="p-3 text-primary-500 hover:bg-primary-50 rounded-xl transition-all">
+                              <Edit className="w-5 h-5" />
+                            </button>
+                            <button onClick={() => handleDelete(rest._id)} className="p-3 text-red-100 group-hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </>
+                      )}
                   </div>
                 ))}
                 {restaurants.length === 0 && (

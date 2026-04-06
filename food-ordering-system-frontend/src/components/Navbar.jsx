@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import {
   ShoppingCart, User, LogOut, Utensils,
-  LayoutDashboard, Menu as MenuIcon, X, ChevronRight
+  LayoutDashboard, Menu as MenuIcon, X, ChevronRight, Settings
 } from 'lucide-react';
 
 const STYLE = `
@@ -185,6 +185,13 @@ const Navbar = () => {
                         <p className="text-sm text-stone-400 truncate mt-0.5">{user.email}</p>
                       </div>
                       <div className="p-2">
+                        <Link
+                          to="/profile"
+                          className="w-full flex items-center gap-2 px-3 py-2.5 text-base font-semibold text-stone-700 hover:bg-stone-100 rounded-xl transition-colors"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Profile
+                        </Link>
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center gap-2 px-3 py-2.5 text-base font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
@@ -267,6 +274,13 @@ const Navbar = () => {
               {user && user.role !== 'admin' && (
                 <MobileLink to="/orders" onClick={() => setMobileOpen(false)}>
                   My Orders
+                </MobileLink>
+              )}
+
+              {user && (
+                <MobileLink to="/profile" onClick={() => setMobileOpen(false)}>
+                  <Settings className="w-4 h-4" />
+                  Profile
                 </MobileLink>
               )}
 
