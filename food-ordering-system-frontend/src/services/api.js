@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Use Vite environment variable VITE_API_BASE if set (e.g. http://localhost:3000/api),
-// otherwise fall back to the user-service directly for local development.
-const base = import.meta.env?.VITE_API_BASE || 'http://localhost:3001';
+// Use API Gateway on port 3000 for all requests
+// This provides a single entry point and handles routing to all microservices
+const base = import.meta.env?.VITE_API_BASE || 'http://localhost:3000/api';
 
 const api = axios.create({
     baseURL: base,
