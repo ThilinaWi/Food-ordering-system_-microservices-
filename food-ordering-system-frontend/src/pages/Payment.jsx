@@ -142,11 +142,13 @@ const Payment = () => {
     const handleReceiptUploadSuccess = async () => {
         // Update order status to Confirmed after receipt upload
         try {
+            console.log('Receipt uploaded successfully, updating order status...');
             await api.put(`/orders/${orderId}/status`, { status: 'Confirmed' });
-            setTimeout(() => navigate('/orders'), 2000);
+            console.log('Order status updated to Confirmed');
+            setTimeout(() => navigate('/payment-history'), 2000);
         } catch (error) {
             console.error('Failed to update order status:', error);
-            setTimeout(() => navigate('/orders'), 2000);
+            setTimeout(() => navigate('/payment-history'), 2000);
         }
     };
 

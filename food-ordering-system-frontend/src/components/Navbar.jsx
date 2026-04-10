@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import {
   ShoppingCart, User, LogOut, Utensils,
-  LayoutDashboard, Menu as MenuIcon, X, ChevronRight, Settings
+  LayoutDashboard, Menu as MenuIcon, X, ChevronRight, Settings, FileText
 } from 'lucide-react';
 
 const STYLE = `
@@ -160,6 +160,18 @@ const Navbar = () => {
                   </Link>
                 )}
 
+                {/* Payment History */}
+                {user.role !== 'admin' && (
+                  <Link to="/payment-history"
+                    className={`text-base font-semibold transition-colors duration-200 ${
+                      location.pathname === '/payment-history'
+                        ? 'text-red-500'
+                        : `${textBase} ${textHov}`
+                    }`}>
+                    Payments
+                  </Link>
+                )}
+
                 {/* Divider */}
                 <div className={`w-px h-5 ${divider}`} />
 
@@ -274,6 +286,13 @@ const Navbar = () => {
               {user && user.role !== 'admin' && (
                 <MobileLink to="/orders" onClick={() => setMobileOpen(false)}>
                   My Orders
+                </MobileLink>
+              )}
+
+              {user && user.role !== 'admin' && (
+                <MobileLink to="/payment-history" onClick={() => setMobileOpen(false)}>
+                  <FileText className="w-4 h-4" />
+                  Payment History
                 </MobileLink>
               )}
 

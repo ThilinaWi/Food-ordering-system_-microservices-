@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Layers, Store, UtensilsCrossed, FileText, Users } from 'lucide-react';
+import { Layers, Store, UtensilsCrossed, FileText, Users, CreditCard } from 'lucide-react';
 
 const AdminDashboard = () => {
   const navItems = [
@@ -8,6 +8,7 @@ const AdminDashboard = () => {
     { name: 'Restaurants', path: '/admin/restaurants', icon: <Store className="w-5 h-5 mr-3" /> },
     { name: 'Menu Items', path: '/admin/menu', icon: <UtensilsCrossed className="w-5 h-5 mr-3" /> },
     { name: 'Orders', path: '/admin/orders', icon: <FileText className="w-5 h-5 mr-3" /> },
+    { name: 'Payments', path: '/admin/payments', icon: <CreditCard className="w-5 h-5 mr-3" /> },
     { name: 'Users', path: '/admin/users', icon: <Users className="w-5 h-5 mr-3" /> },
   ];
 

@@ -58,26 +58,36 @@ exports.uploadReceipt = async (req, res, next) => {
     try {
         const { id } = req.params;
         
+        console.log('[uploadReceipt] Order ID:', id);
+        console.log('[uploadReceipt] File object:', req.file);
+        console.log('[uploadReceipt] File path:', req.file?.path);
+        console.log('[uploadReceipt] File filename:', req.file?.filename);
+
         if (!req.file) {
+            console.error('[uploadReceipt] No file uploaded');
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
         const order = await Order.findById(id);
         if (!order) {
+            console.error('[uploadReceipt] Order not found:', id);
             return res.status(404).json({ error: 'Order not found' });
         }
 
-        // Store the file path in the order
-        const receiptPath = `/uploads/receipts/${req.file.filename}`;
-        order.paymentReceipt = receiptPath;
+        // Store just the filename for the download endpoint
+        const filename = req.file.filename;
+        order.paymentReceipt = filename;
         await order.save();
+
+        console.log('[uploadReceipt] Receipt saved with filename:', filename);
 
         res.json({ 
             message: 'Receipt uploaded successfully',
-            receipt: receiptPath,
+            receipt: filename,
             order
         });
     } catch (err) {
+        console.error('[uploadReceipt] Error:', err);
         next(err);
     }
 };

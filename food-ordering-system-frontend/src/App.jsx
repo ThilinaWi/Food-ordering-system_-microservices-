@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Menu from './pages/Menu';
 import Cart from './pages/Cart';
 import OrderHistory from './pages/OrderHistory';
+import PaymentHistory from './pages/PaymentHistory';
 import Payment from './pages/Payment';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -16,6 +17,7 @@ import AdminCategories from './admin/AdminCategories';
 import AdminRestaurants from './admin/AdminRestaurants';
 import AdminMenu from './admin/AdminMenu';
 import AdminOrders from './admin/AdminOrders';
+import AdminPayments from './admin/AdminPayments';
 import AdminUsers from './admin/AdminUsers';
 
 function AppLayout() {
@@ -45,6 +47,7 @@ function AppLayout() {
                 <Route path="restaurants" element={<AdminRestaurants />} />
                 <Route path="menu" element={<AdminMenu />} />
                 <Route path="orders" element={<AdminOrders />} />
+                <Route path="payments" element={<AdminPayments />} />
                 <Route path="users" element={<AdminUsers />} />
               </Route>
             </Route>
@@ -61,6 +64,7 @@ function AppLayout() {
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/orders" element={<OrderHistory />} />
+                <Route path="/payment-history" element={<PaymentHistory />} />
                 <Route path="/payment/:orderId" element={<Payment />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>

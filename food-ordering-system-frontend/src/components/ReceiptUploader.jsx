@@ -44,15 +44,20 @@ const ReceiptUploader = ({ orderId, onSuccess, onError }) => {
     formData.append('receipt', file);
 
     try {
+      console.log('Uploading receipt for order:', orderId);
+      console.log('File:', file.name, file.type, file.size);
+      
       const response = await api.post(`/orders/${orderId}/receipt`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+      console.log('Receipt upload response:', response.data);
       setUploadedFile(file.name);
       if (onSuccess) {
         onSuccess(response.data);
       }
     } catch (err) {
+      console.error('Receipt upload error:', err);
       const errorMsg = err.response?.data?.error || 'Failed to upload receipt. Please try again.';
       setError(errorMsg);
       if (onError) onError(errorMsg);

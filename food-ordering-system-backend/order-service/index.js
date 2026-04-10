@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
+const fs = require('fs');
 const swaggerUi = require('swagger-ui-express');
 const orderRoutes = require('./routes/orderRoutes');
 
@@ -8,6 +10,66 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+// Enable CORS for file downloads
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Download receipt endpoint
+app.get('/download/:filename', (req, res) => {
+  try {
+    const filename = req.params.filename;
+    console.log('[Download] Requested file:', filename);
+    
+    // Get the uploads directory path
+    const uploadsDir = path.join(__dirname, 'uploads', 'receipts');
+    const filepath = path.join(uploadsDir, filename);
+    
+    console.log('[Download] Uploads dir:', uploadsDir);
+    console.log('[Download] Full filepath:', filepath);
+    
+    // Prevent directory traversal attacks - check if resolved path is within uploads/receipts
+    const realpath = path.resolve(filepath);
+    const realuploads = path.resolve(uploadsDir);
+    
+    console.log('[Download] Real path:', realpath);
+    console.log('[Download] Real uploads:', realuploads);
+    
+    if (!realpath.startsWith(realuploads)) {
+      console.error('[Download] Security check failed - path outside uploads');
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    // Check if file exists
+    if (!fs.existsSync(filepath)) {
+      console.error('[Download] File not found:', filepath);
+      // List what's in the directory for debugging
+      if (fs.existsSync(uploadsDir)) {
+        const files = fs.readdirSync(uploadsDir);
+        console.log('[Download] Files in receipts directory:', files);
+      } else {
+        console.error('[Download] Receipts directory does not exist:', uploadsDir);
+      }
+      return res.status(404).json({ error: 'Receipt file not found', path: filepath });
+    }
+    
+    console.log('[Download] File found, sending:', filepath);
+    res.download(filepath, filename);
+  } catch (err) {
+    console.error('[Download] Error:', err);
+    res.status(500).json({ error: 'Failed to download file', message: err.message });
+  }
+});
 
 // Swagger setup
 const swaggerDocument = {
