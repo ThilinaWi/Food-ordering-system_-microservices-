@@ -53,3 +53,31 @@ exports.updateOrderStatus = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.uploadReceipt = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        // Store the file path in the order
+        const receiptPath = `/uploads/receipts/${req.file.filename}`;
+        order.paymentReceipt = receiptPath;
+        await order.save();
+
+        res.json({ 
+            message: 'Receipt uploaded successfully',
+            receipt: receiptPath,
+            order
+        });
+    } catch (err) {
+        next(err);
+    }
+};
