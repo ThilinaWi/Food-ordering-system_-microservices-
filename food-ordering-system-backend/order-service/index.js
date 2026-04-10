@@ -3,24 +3,22 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config();
 
 const app = express();
-app.use(express.json());
 
-// Enable CORS for file downloads
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// Enable CORS for all origins
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

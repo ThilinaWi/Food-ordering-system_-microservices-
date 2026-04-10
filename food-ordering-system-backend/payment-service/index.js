@@ -1,12 +1,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const paymentRoutes = require('./routes/paymentRoutes');
 
 dotenv.config();
 
 const app = express();
+
+// Enable CORS for all origins
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 // Swagger setup
