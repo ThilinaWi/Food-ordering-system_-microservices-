@@ -9,6 +9,15 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const persistUser = (nextUser) => {
+        setUser(nextUser);
+        localStorage.setItem('user', JSON.stringify(nextUser));
+        localStorage.setItem('userId', nextUser.id);
+        if (nextUser.role) {
+            localStorage.setItem('role', nextUser.role);
+        }
+    };
+
     useEffect(() => {
         // Hydrate from localStorage
         const token = localStorage.getItem('token');
@@ -41,7 +50,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('role', loggedUser.role);
         }
         
-        setUser(loggedUser);
+        persistUser(loggedUser);
         
         // Ensure api service uses the new token
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -52,15 +61,21 @@ export const AuthProvider = ({ children }) => {
         return await api.post('/users/register', { name, email, password });
     };
 
+    const updateUser = (nextUser) => {
+        persistUser(nextUser);
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('role');
         delete api.defaults.headers.common['Authorization'];
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading }}>
             {children}
         </AuthContext.Provider>
     );

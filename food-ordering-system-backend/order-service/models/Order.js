@@ -11,7 +11,8 @@ const orderSchema = new mongoose.Schema({
     }],
     totalAmount: { type: Number, required: true },
     location: { type: String, required: true },
-    status: { type: String, enum: ['Pending', 'Confirmed', 'Preparing', 'Delivered', 'Cancelled'], default: 'Pending' }
+    status: { type: String, enum: ['Pending', 'Confirmed', 'Preparing', 'Delivered', 'Cancelled'], default: 'Pending' },
+    paymentReceipt: { type: String, default: null } // File path or URL of uploaded receipt
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);
