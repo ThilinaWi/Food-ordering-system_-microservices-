@@ -1,0 +1,348 @@
+{
+  "info": {
+    "_postman_id": "food-ordering-system-microservices",
+    "name": "Food Ordering System API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for Food Ordering System (Microservices) via API Gateway."
+  },
+  "item": [
+    {
+      "name": "User Auth & Profile",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/users/register", "host": ["http://localhost:3000"], "path": ["api", "users", "register"] }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/users/login", "host": ["http://localhost:3000"], "path": ["api", "users", "login"] }
+          }
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/users/:id", "host": ["http://localhost:3000"], "path": ["api", "users", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:3000/api/categories", "host": ["http://localhost:3000"], "path": ["api", "categories"] }
+          }
+        },
+        {
+          "name": "Add Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pizza\",\n  \"description\": \"Italian pizzas\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/categories", "host": ["http://localhost:3000"], "path": ["api", "categories"] }
+          }
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Pizza\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/categories/:id", "host": ["http://localhost:3000"], "path": ["api", "categories", ":id"] }
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/categories/:id", "host": ["http://localhost:3000"], "path": ["api", "categories", ":id"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurants",
+      "item": [
+        {
+          "name": "Get Restaurants",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:3000/api/restaurants", "host": ["http://localhost:3000"], "path": ["api", "restaurants"] }
+          }
+        },
+        {
+          "name": "Add Restaurant (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Pizza Place", "type": "text" },
+                { "key": "description", "value": "Best pizza in town", "type": "text" },
+                { "key": "image", "type": "file" }
+              ]
+            },
+            "url": { "raw": "http://localhost:3000/api/restaurants", "host": ["http://localhost:3000"], "path": ["api", "restaurants"] }
+          }
+        },
+        {
+          "name": "Update Restaurant (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Updated Pizza Place", "type": "text" },
+                { "key": "description", "value": "Updated description", "type": "text" },
+                { "key": "image", "type": "file" }
+              ]
+            },
+            "url": { "raw": "http://localhost:3000/api/restaurants/:id", "host": ["http://localhost:3000"], "path": ["api", "restaurants", ":id"] }
+          }
+        },
+        {
+          "name": "Delete Restaurant (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/restaurants/:id", "host": ["http://localhost:3000"], "path": ["api", "restaurants", ":id"] }
+          }
+        },
+        {
+          "name": "Rate Restaurant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 5\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/restaurants/:id/rate", "host": ["http://localhost:3000"], "path": ["api", "restaurants", ":id", "rate"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "item": [
+        {
+          "name": "Get All Menu",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:3000/api/menu", "host": ["http://localhost:3000"], "path": ["api", "menu"] }
+          }
+        },
+        {
+          "name": "Get Menu by Restaurant",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:3000/api/menu/:restaurantId", "host": ["http://localhost:3000"], "path": ["api", "menu", ":restaurantId"] }
+          }
+        },
+        {
+          "name": "Add Menu Item (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Margherita", "type": "text" },
+                { "key": "price", "value": "10.99", "type": "text" },
+                { "key": "restaurantId", "value": "<restaurantId>", "type": "text" },
+                { "key": "image", "type": "file" }
+              ]
+            },
+            "url": { "raw": "http://localhost:3000/api/menu", "host": ["http://localhost:3000"], "path": ["api", "menu"] }
+          }
+        },
+        {
+          "name": "Update Menu Item (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Updated Margherita", "type": "text" },
+                { "key": "price", "value": "12.99", "type": "text" },
+                { "key": "image", "type": "file" }
+              ]
+            },
+            "url": { "raw": "http://localhost:3000/api/menu/:id", "host": ["http://localhost:3000"], "path": ["api", "menu", ":id"] }
+          }
+        },
+        {
+          "name": "Delete Menu Item (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/menu/:id", "host": ["http://localhost:3000"], "path": ["api", "menu", ":id"] }
+          }
+        },
+        {
+          "name": "Rate Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 5\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/menu/:id/rate", "host": ["http://localhost:3000"], "path": ["api", "menu", ":id", "rate"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"menuId\": \"<menuId>\", \"quantity\": 2 }\n  ],\n  \"address\": \"123 Main St\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/orders", "host": ["http://localhost:3000"], "path": ["api", "orders"] }
+          }
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/orders", "host": ["http://localhost:3000"], "path": ["api", "orders"] }
+          }
+        },
+        {
+          "name": "Get Orders by User",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/orders/:userId", "host": ["http://localhost:3000"], "path": ["api", "orders", ":userId"] }
+          }
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Confirmed\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/orders/:id/status", "host": ["http://localhost:3000"], "path": ["api", "orders", ":id", "status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"<orderId>\",\n  \"amount\": 25.00,\n  \"method\": \"card\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/payments", "host": ["http://localhost:3000"], "path": ["api", "payments"] }
+          }
+        },
+        {
+          "name": "Get Payment by Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/payments/:orderId", "host": ["http://localhost:3000"], "path": ["api", "payments", ":orderId"] }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "token", "value": "" },
+    { "key": "admin_token", "value": "" }
+  ]
+}
