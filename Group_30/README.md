@@ -103,6 +103,26 @@ npm run dev
 
 ---
 
+## System Workflow
+
+### Frontend Workflow
+1. **User Interaction**: Users access the React application to browse menus, manage their cart, and place orders.
+2. **State Management**: The app uses Context API (`AuthContext`, `CartContext`) to manage user sessions and shopping cart state.
+3. **API Communication**: All frontend requests are routed centrally through Axios (`src/services/api.js`) to the backend API Gateway.
+4. **Role-Based Access**: 
+   - **Customers**: Can view menus, add items to cart, place orders, and make payments.
+   - **Admins**: Have access to a dedicated Admin Dashboard to manage users, restaurants, menu categories, and view all system orders.
+
+### Backend Workflow (Microservices)
+1. **API Gateway**: Acts as the single entry point. It receives all frontend requests and proxies them to the appropriate underlying microservice (User, Restaurant, Order, or Payment) based on the route prefix.
+2. **User Service**: Handles authentication (JWT) and authorization. Validates credentials and returns tokens.
+3. **Restaurant Service**: Manages restaurant listings, categories, and menu items. Admins use this service to configure the food catalog and upload images.
+4. **Order Service**: Coordinates order placement. When a user checks out, this service records the order items and calculates the total amount.
+5. **Payment Service**: Processes transactions. Once an order is created, this service handles the payment validation and updates the order status upon success.
+6. **Security/Auth**: Protected routes across all microservices verify the JWT token via middleware to ensure the user has the correct permissions.
+
+---
+
 ## API Endpoints (via Gateway)
 
 Example endpoints (all prefixed with `/api`):
